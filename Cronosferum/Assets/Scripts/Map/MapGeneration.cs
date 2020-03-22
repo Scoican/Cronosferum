@@ -12,11 +12,12 @@ public class MapGeneration : MonoBehaviour
 	public int height = 75;
 	public float perlinScale = 20f;
 
-	private Dictionary<Vector2, Tile> Tiles = new Dictionary<Vector2, Tile>();
+	public Tile[][] Tiles;
 	private float seed;
 
 	void Start()
 	{
+		Tiles = new Tile[height][];
 		GenerateMap();
 	}
 
@@ -28,27 +29,15 @@ public class MapGeneration : MonoBehaviour
 		seed = UnityEngine.Random.Range(0f, 99999f);
 		for (int x = 0; x < width; x++)
 		{
+			Tiles[x] = new Tile[width];
 			for (int z = 0; z < height; z++)
 			{
 				var newTile = Instantiate(tilePrefab, new Vector3(x, 0, z), Quaternion.identity);
 				var generatedTile = BuildTile(newTile, x, z);
-				Tiles.Add(generatedTile.MapPosition, generatedTile);
+				generatedTile.transform.SetParent(gameObject.transform);
+				Tiles[x][z]=generatedTile;
 			}
 		}
-	}
-
-	/// <summary>
-	/// Method that calculates the height of a given tile and calculates a color based on it's Perlin value
-	/// </summary>
-	/// <param name="tile">Given tile to be modified</param>
-	/// <param name="xPos">Position on the map</param>
-	/// <param name="zPos">Position on the map</param>
-	private void GenerateTerrain(GameObject tile, int xPos, int zPos)
-	{
-		var tilePerlinValue = CalculateTilePerlinValue(xPos, zPos);
-		var tileColor = CalculateTileColor(tilePerlinValue);
-		tile.GetComponent<Tile>().Height = tilePerlinValue * 75;
-		tile.GetComponentInChildren<Renderer>().material.SetColor("_Color", tileColor);
 	}
 
 	private Color32 CalculateTileColor(float tilePerlinValue)
@@ -80,7 +69,6 @@ public class MapGeneration : MonoBehaviour
 		return (byte)((perlinSample * colorValue) + (perlinSample * colorValue) * 0.2f);
 	}
 
-	//TODO: refactor
 	/// <summary>
 	/// Method that calculates the Perlin Value of a tile and based on that value returns a float number representing the height
 	/// </summary>
@@ -96,6 +84,12 @@ public class MapGeneration : MonoBehaviour
 		return sample;
 	}
 
+	/// <summary>
+	/// Method that calculates the height of a given tile and calculates a color based on it's Perlin value
+	/// </summary>
+	/// <param name="tile">Given tile to be modified</param>
+	/// <param name="xPos">Position on the map</param>
+	/// <param name="zPos">Position on the map</param>
 	private Tile BuildTile(GameObject newTile, int xPos, int zPos)
 	{
 		var tile = newTile.GetComponent<Tile>();
@@ -112,7 +106,6 @@ public class MapGeneration : MonoBehaviour
 	{
 		if (tilePerlinValue < 0.35f)
 		{
-			tilePerlinValue += 0.1f;
 			return Tile.TileType.Water;
 		}
 		else if (tilePerlinValue >= 0.35f && tilePerlinValue < 0.60f)
