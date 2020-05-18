@@ -1,12 +1,10 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using Predation.Utils;
 using UnityEngine;
 
 public class Tile : MonoBehaviour
 {
-	public bool Walkable { get; set; }
 	public bool Occupied { get; set; }
-	public Vector2 MapPosition { get; set; }
+	public Position MapPosition { get; set; }
 
 	public TileType Type { get; set; }
 
