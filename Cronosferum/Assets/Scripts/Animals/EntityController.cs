@@ -1,7 +1,5 @@
-﻿using DG.Tweening;
-using Predation;
+﻿/*using DG.Tweening;
 using Predation.Utils;
-using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -36,7 +34,7 @@ public class EntityController : MonoBehaviour
 				break;
 			case EntityState.SatisfyReproductionUrge:
 				break;
-			case EntityState.Survive:
+			case EntityState.Fleeing:
 				Wander();
 				break;
 		}
@@ -56,20 +54,23 @@ public class EntityController : MonoBehaviour
 
 	private void HeadToFood()
 	{
-		if (animal.foodTarget == null || animal.foodTarget == Position.invalid)
+		if (animal.foodTarget == null)
 		{
 			animal.foodTarget = animal.SenseFood(transform.position, 2);
 		}
 
-		if (path != null && animal.foodTarget != Position.invalid)
+		if (path != null && animal.foodTarget != null)
 		{
-			path = MapManager.Instance.MapGraph.AStarSearch(animal.position, animal.foodTarget);
-			var nextTile = map.GetTile(path[0].position);
-			MoveToTarget(nextTile);
+			path = MapManager.Instance.MapGraph.AStarSearch(animal.position, animal.foodTarget.position);
+			if (path.Count > 0)
+			{
+				var nextTile = map.GetTile(path[0].position);
+				MoveToTarget(nextTile);
+			}
 		}
-		else if (animal.foodTarget != Position.invalid)
+		else if (animal.foodTarget != null)
 		{
-			path = MapManager.Instance.MapGraph.AStarSearch(animal.position, animal.foodTarget);
+			path = MapManager.Instance.MapGraph.AStarSearch(animal.position, animal.foodTarget.position);
 		}
 
 		if (path == null)
@@ -80,15 +81,15 @@ public class EntityController : MonoBehaviour
 		{
 			animal.currentState = EntityState.Wandering;
 			path = null;
-			animal.foodTarget = Position.invalid;
+			animal.foodTarget = null;
 		}
 	}
 
 	private void HeadForWater()
 	{
-		if (animal.waterTarget == null || animal.waterTarget == Position.invalid)
+		if (animal.WaterTarget == null || animal.WaterTarget == Position.invalid)
 		{
-			animal.waterTarget = animal.SenseWater(transform.position, 2);
+			animal.WaterTarget = animal.SenseWater(transform.position, 2);
 		}
 
 		if (path != null)
@@ -97,9 +98,9 @@ public class EntityController : MonoBehaviour
 			path.RemoveAt(0);
 			MoveToTarget(nextTile);
 		}
-		else if (animal.waterTarget != Position.invalid)
+		else if (animal.WaterTarget != Position.invalid)
 		{
-			path = MapManager.Instance.MapGraph.AStarSearch(animal.position, animal.waterTarget);
+			path = MapManager.Instance.MapGraph.AStarSearch(animal.position, animal.WaterTarget);
 			if (path.Count > 1)
 			{
 				path.RemoveAt(path.Count - 1);
@@ -114,23 +115,23 @@ public class EntityController : MonoBehaviour
 		{
 			animal.currentState = EntityState.Wandering;
 			path = null;
-			animal.waterTarget = Position.invalid;
+			animal.WaterTarget = Position.invalid;
 		}
 	}
 
 	private void MoveToTarget(Tile target)
 	{
 		RotateToFaceNextDestination(target);
-		transform.DOJump(new Vector3(target.MapPosition.x, target.Height / 10, target.MapPosition.y), 0.5f, 0, 0.25f);
+		transform.DOJump(new Vector3(target.Position.x, target.Height / 10, target.Position.y), 0.5f, 0, 0.25f);
 		currentTile.Occupied = false;
 		currentTile = target;
 		currentTile.Occupied = true;
-		animal.position = currentTile.MapPosition;
+		animal.position = currentTile.Position;
 	}
 
 	private List<Tile> GetPossibleDestinations()
 	{
-		var possibleDestinations = map.GetTileNeighbours(currentTile.MapPosition);
+		var possibleDestinations = map.GetTileNeighbours(currentTile.Position);
 		for (int i = 0; i < possibleDestinations.Count; i++)
 		{
 			if (possibleDestinations[i].Type == Tile.TileType.Water || possibleDestinations[i].Occupied == true)
@@ -144,22 +145,22 @@ public class EntityController : MonoBehaviour
 
 	private void RotateToFaceNextDestination(Tile destination)
 	{
-		if (currentTile.MapPosition.x > destination.MapPosition.x)
+		if (currentTile.Position.x > destination.Position.x)
 		{
 			transform.rotation = Quaternion.Euler(0f, -90f, 0f);
 			return;
 		}
-		if (currentTile.MapPosition.y > destination.MapPosition.y)
+		if (currentTile.Position.y > destination.Position.y)
 		{
 			transform.rotation = Quaternion.Euler(0f, 180f, 0f);
 			return;
 		}
-		if (currentTile.MapPosition.x < destination.MapPosition.x)
+		if (currentTile.Position.x < destination.Position.x)
 		{
 			transform.rotation = Quaternion.Euler(0f, 90f, 0f);
 			return;
 		}
-		if (currentTile.MapPosition.y < destination.MapPosition.y)
+		if (currentTile.Position.y < destination.Position.y)
 		{
 			transform.rotation = Quaternion.Euler(0f, 0f, 0f);
 			return;
@@ -191,3 +192,4 @@ public class EntityController : MonoBehaviour
 		}
 	}
 }
+*/

@@ -1,4 +1,5 @@
 ﻿using Predation.Utils;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -14,7 +15,10 @@ public class MapGraph : MonoBehaviour
 			for (int j = 0; j < map.Size.y; j++)
 			{
 				var tile = map.GetTile(new Position(i, j));
-				Nodes.Add(tile.MapPosition, new Node(new Position(i, j)));
+				if (tile.Type != Tile.TileType.Water)
+				{
+					Nodes.Add(tile.Position, new Node(new Position(i, j)));
+				}			
 			}
 		}
 	}
@@ -57,6 +61,7 @@ public class MapGraph : MonoBehaviour
 
 	public List<Node> AStarSearch(Position source, Position destination)
 	{
+		destination = ValidateDestination(destination);
 		var startNode = GetNode(source.x, source.y);
 		var endNode = GetNode(destination.x, destination.y);
 
@@ -109,6 +114,28 @@ public class MapGraph : MonoBehaviour
 			}
 		}
 		return null;
+	}
+
+	private Position ValidateDestination(Position destination)
+	{
+		if (Nodes.ContainsKey(destination))
+		{
+			return destination;
+		}
+		else
+		{
+			var destinationNeighbours = GetNodeNeighbours(new Node(destination));
+			var minDistance = float.MaxValue;
+			foreach(var neighbour in destinationNeighbours)
+			{
+				if(Position.Distance(neighbour.position, destination) < minDistance)
+				{
+					minDistance = Position.Distance(neighbour.position, destination);
+					destination = neighbour.position;
+				}
+			}
+			return destination;
+		}
 	}
 
 	public List<Node> RetracePath(Node startNode, Node endNode)

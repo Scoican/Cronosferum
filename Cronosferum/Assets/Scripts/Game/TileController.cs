@@ -18,7 +18,6 @@ public class TileController : MonoBehaviour
 			if (!tile.Occupied && tile.Type != Tile.TileType.Water)
 			{
 				SpawnEntity(entityManager.GetEntityToSpawn());
-				entityManager.SelectEntityToSpawn(null);
 			}
 			else
 			{
@@ -29,7 +28,15 @@ public class TileController : MonoBehaviour
 		{
 			Debug.Log("PLEASE SELECT AN ANIMAL!");
 		}
+		
+	}
 
+	private void OnMouseOver()
+	{
+		if (Input.GetMouseButtonDown(1))
+		{
+			Debug.Log($"This tile is {tile.Type} and has a position of {tile.Position}");
+		}
 	}
 
 	void OnMouseEnter()
@@ -46,12 +53,16 @@ public class TileController : MonoBehaviour
 		GetComponentInChildren<Renderer>().material.SetColor("_Color", tileColor);
 	}
 
-	private void SpawnEntity(EntityBlueprint entityBlueprint)
+	public void SpawnEntity(EntityBlueprint entityBlueprint)
 	{
-		var newEntity = Instantiate(entityBlueprint.entityPrefab, new Vector3(GetComponent<Tile>().MapPosition.x, GetComponent<Tile>().Height / 10, GetComponent<Tile>().MapPosition.y), Quaternion.identity);
-		newEntity.gameObject.GetComponent<EntityController>().currentTile = tile;
+		if (tile == null)
+		{
+			tile = GetComponent<Tile>();
+		}
+		var newEntity = Instantiate(entityBlueprint.entityPrefab, new Vector3(GetComponent<Tile>().Position.x, GetComponent<Tile>().Height / 10, GetComponent<Tile>().Position.y), Quaternion.identity);
+		newEntity.gameObject.GetComponent<BaseAnimalController>().currentTile = tile;
 		tile.Occupied = true;
-		entityManager.Register(newEntity.GetComponent<Animal>());
+		EntityManager.Instance.Register(newEntity.GetComponent<Animal>());
 	}
 
 	private void Start()

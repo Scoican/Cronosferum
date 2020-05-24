@@ -1,16 +1,26 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public class MainMenuController : MonoBehaviour
 {
-    public void SwitchSceneToStartGame()
+	private MainMenuView view;
+
+	private void Start()
 	{
-		SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
+		view = GetComponent<MainMenuView>();
+		InitViewElements();
 	}
 
-	public void SwitchSceneToMainMenu()
+	private void InitViewElements()
 	{
-		SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex - 1);
+		view.ExitGameButton.onClick.AddListener(ExitGame);
+		view.StartNewGameButton.onClick.AddListener(OpenSetttingsPanel);
+	}
+
+	private void OpenSetttingsPanel()
+	{
+		view.SettingsPanel.SetActive(true);
 	}
 
 	public void ExitGame()

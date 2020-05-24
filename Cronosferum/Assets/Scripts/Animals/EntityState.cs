@@ -5,7 +5,12 @@
 		Wandering,
 		SatisfyHunger,
 		SatisfyThirst,
-		SatisfyReproductionUrge,
-		Survive
+		Eating,
+		Drinking,
+		LookingForMate,
+		HeadingToFemalePartener,
+		WaitingForMalePartener,
+		Breeding,
+		Fleeing
 	}
 }

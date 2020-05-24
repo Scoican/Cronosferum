@@ -133,16 +133,20 @@ public class MapBuilder : MonoBehaviour
 	private Tile BuildTile(GameObject newTile, int xPos, int zPos)
 	{
 		var tile = newTile.GetComponent<Tile>();
-		tile.MapPosition = new Position(xPos, zPos);
+		tile.Position = new Position(xPos, zPos);
 		var tilePerlinValue = CalculateTilePerlinValue(xPos, zPos);
 		var tileColor = CalculateTileColor(tilePerlinValue);
 		tile.Type = CalculateTileType(tilePerlinValue);
-		if(tile.Type == Tile.TileType.Water)
+		if (tile.Type == Tile.TileType.Water)
 		{
 			tile.gameObject.layer = LayerMask.NameToLayer("Water");
 		}
 		tile.Height = tilePerlinValue * TileHeightMultiplier;
-		if (tile.Type == Tile.TileType.Field && Random.Range(0f, 1f) <= 0.15f)
+		if (tile.Type != Tile.TileType.Water && !tile.Occupied && Random.Range(0f, 1f) <= GameSettings.OtherElementsPercentage)
+		{
+			GenerateObstacles(tile);
+		}
+		if (tile.Type == Tile.TileType.Field && !tile.Occupied && Random.Range(0f, 1f) <= GameSettings.FoodPercentage)
 		{
 			GeneratePlant(tile);
 		}
@@ -174,8 +178,28 @@ public class MapBuilder : MonoBehaviour
 		if (Random.Range(0f, 1f) <= 0.5f)
 		{
 			var plant = Instantiate(EntityFactory.Instance.getEntity("plant_blueprint").entityPrefab, new Vector3(randomPositionX, tile.Height / 10, randomPositionZ), Quaternion.identity);
-			plant.GetComponent<Entity>().position = tile.MapPosition;
-			plant.transform.SetParent(tile.transform);
+			plant.GetComponent<Entity>().position = tile.Position;
+			//plant.transform.SetParent(tile.transform);
+			EntityManager.Instance.Register(plant.GetComponent<Entity>());
 		}
+	}
+
+	private void GenerateObstacles(Tile tile)
+	{
+		GameObject prefab;
+
+		if (tile.Type == Tile.TileType.Field)
+		{
+			prefab = Resources.Load(Paths.GREEN_TREES_PREFAB + Random.Range(1, 5).ToString()) as GameObject;
+			var obstacle = Instantiate(prefab, new Vector3(tile.Position.x, tile.Height / 10, tile.Position.y), Quaternion.identity);
+			obstacle.transform.SetParent(tile.transform);
+		}
+		else if (tile.Type == Tile.TileType.Mountain)
+		{
+			prefab = Resources.Load(Paths.ORANGE_TREES_PREFAB + Random.Range(1, 5).ToString()) as GameObject;
+			var obstacle = Instantiate(prefab, new Vector3(tile.Position.x, tile.Height / 10, tile.Position.y), Quaternion.identity);
+			obstacle.transform.SetParent(tile.transform);
+		}
+		tile.Occupied = true;
 	}
 }

@@ -23,8 +23,7 @@ public class MapManager : MonoBehaviour
 			return instance;
 		}
 	}
-
-	private Vector2 size;
+	public Vector2 Size;
 
 	public MapGraph MapGraph;
 	public MapBuilder builder;
@@ -38,21 +37,20 @@ public class MapManager : MonoBehaviour
 			Debug.LogError("More than one MapManager in the scene!");
 			Destroy(gameObject);
 		}
-		Tiles = builder.GenerateMap(size.x, size.y);
-		MapGraph = GetComponent<MapGraph>();
-		MapGraph.GenerateGraph(this);
 	}
 
-	public Vector3 Size
+	public void InitializeMap()
 	{
-		get
+		if (GameSettings.MapSize != 0)
 		{
-			return size;
+			Tiles = builder.GenerateMap(GameSettings.MapSize, GameSettings.MapSize);
 		}
-		set
+		else
 		{
-			size = value;
+			Tiles = builder.GenerateMap(Size.x, Size.y);
 		}
+
+		MapGraph.GenerateGraph(this);
 	}
 
 	public void ClearMap()
@@ -86,7 +84,7 @@ public class MapManager : MonoBehaviour
 	public List<Tile> GetTileNeighbours(Position coordinates)
 	{
 		var neighbours = new List<Tile>();
-		var neighboursCoordinates = new List<Position>() { Position.down,Position.up,Position.left,Position.right};
+		var neighboursCoordinates = new List<Position>() { Position.down, Position.up, Position.left, Position.right };
 		foreach (var possibleNeighbour in neighboursCoordinates)
 		{
 			if (Tiles.ContainsKey(coordinates + possibleNeighbour))
@@ -97,9 +95,22 @@ public class MapManager : MonoBehaviour
 		return neighbours;
 	}
 
+	public Dictionary<Position, Tile> GetUnoccupiedTiles()
+	{
+		var unocupiedTiles = new Dictionary<Position, Tile>();
+		foreach(var tile in Tiles)
+		{
+			if(!tile.Value.Occupied && tile.Value.Type != Tile.TileType.Water)
+			{
+				unocupiedTiles.Add(tile.Key,tile.Value);
+			}
+		}
+		return unocupiedTiles;
+	}
+
 	public void RegenerateMap()
 	{
 		ClearMap();
-		Tiles = builder.GenerateMap(size.x, size.y);
+		Tiles = builder.GenerateMap(GameSettings.MapSize, GameSettings.MapSize);
 	}
 }

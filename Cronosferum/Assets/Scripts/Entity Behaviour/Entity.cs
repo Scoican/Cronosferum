@@ -14,12 +14,12 @@ public class Entity : MonoBehaviour
 		this.position = position;
 	}
 
-	protected virtual void Die(CauseOfDeath causeOfDeath)
+	public virtual void Die(CauseOfDeath causeOfDeath)
 	{
 		if (!IsDead)
 		{
 			IsDead = true;
-			//Environment.RegisterDeath(this);
+			EntityManager.Instance.RegisterDeath(this, causeOfDeath);
 			Destroy(gameObject);
 		}
 	}

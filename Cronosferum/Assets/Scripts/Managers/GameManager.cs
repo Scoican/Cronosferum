@@ -24,12 +24,12 @@ namespace Predation
 			}
 		}
 
-		public StatisticsManager StatisticsManager;
-		public UIManager UIManager;
-		public EnviromentManager EnviromentManager;
-		public MapManager MapManager;
-		public EntityManager EntityManager;
-		public InputManager InputManager;
+		private StatisticsManager statisticsManager;
+		private UIManager UIManager;
+		private EnviromentManager enviromentManager;
+		private MapManager mapManager;
+		private EntityManager entityManager;
+		private InputManager inputManager;
 
 		public static GameStates gameState;
 
@@ -40,18 +40,22 @@ namespace Predation
 				Debug.LogError("More than one GameManager in the scene!");
 				Destroy(gameObject);
 			}
+		}
 
-			StatisticsManager = new StatisticsManager();
-			UIManager = new UIManager();
-			EnviromentManager = new EnviromentManager();
-			MapManager = new MapManager();
-			EntityManager = new EntityManager();
-			InputManager = new InputManager();
+		private void Start()
+		{
+			mapManager = MapManager.Instance;
+			entityManager = EntityManager.Instance;
+			enviromentManager = EnviromentManager.Instance;
 		}
 
 		private void Update()
 		{
-			InputManager.Update();
+			if (Input.GetKeyDown(KeyCode.G))
+			{
+				EntityManager.Instance.GeneratePrey();
+				EntityManager.Instance.GeneratePredators();
+			}
 		}
 	}
 }

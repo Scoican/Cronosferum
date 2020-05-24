@@ -1,13 +1,11 @@
-﻿using Predation.Utils;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace Predation
 {
 	public class EnviromentManager : MonoBehaviour
 	{
-		public MapGraph MapGraph;
-		public MapManager MapManager;
+		private MapManager mapManager;
+		private EntityManager entityManager;
 
 		private static EnviromentManager instance;
 
@@ -26,6 +24,18 @@ namespace Predation
 				}
 				return instance;
 			}
+		}
+
+		private void Awake()
+		{
+			mapManager = MapManager.Instance;
+			entityManager = EntityManager.Instance;
+		}
+
+		private void Start()
+		{
+			mapManager.InitializeMap();
+			entityManager.InitializePopulation();
 		}
 	}
 }

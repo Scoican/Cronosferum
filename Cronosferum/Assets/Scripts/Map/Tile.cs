@@ -4,7 +4,8 @@ using UnityEngine;
 public class Tile : MonoBehaviour
 {
 	public bool Occupied { get; set; }
-	public Position MapPosition { get; set; }
+	public bool HasFood { get; set; }
+	public Position Position { get; set; }
 
 	public TileType Type { get; set; }
 
