@@ -25,15 +25,15 @@ namespace Predation.Utils
 			switch (GameSettings.MapSize)
 			{
 				case 20:
-					transform.position = new Vector3(10, 10, -10);
+					transform.position = new Vector3(10, 15, -20);
 					transform.rotation = Quaternion.Euler(20, 0, 0);
 					break;
 				case 30:
-					transform.position = new Vector3(15, 15, -12.5f);
+					transform.position = new Vector3(15, 20, -22.5f);
 					transform.rotation = Quaternion.Euler(22.5f, 0, 0);
 					break;
 				case 40:
-					transform.position = new Vector3(20, 20, -15f);
+					transform.position = new Vector3(20, 25, -25f);
 					transform.rotation = Quaternion.Euler(25f, 0, 0);
 					break;
 			}

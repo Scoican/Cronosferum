@@ -130,7 +130,7 @@ namespace Predation.Map
 				var minDistance = float.MaxValue;
 				foreach (var neighbour in destinationNeighbours)
 				{
-					if (Position.Distance(neighbour.position, destination) < minDistance)
+					if (Nodes.ContainsKey(neighbour.position) && Position.Distance(neighbour.position, destination) < minDistance)
 					{
 						minDistance = Position.Distance(neighbour.position, destination);
 						destination = neighbour.position;

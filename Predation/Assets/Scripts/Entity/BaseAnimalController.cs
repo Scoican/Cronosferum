@@ -228,7 +228,7 @@ namespace Predation.Entities
 			var possibleDestinations = map.GetTileNeighbours(currentTile.Position);
 			for (int i = 0; i < possibleDestinations.Count; i++)
 			{
-				if (possibleDestinations[i].Type == Tile.TileType.Water)
+				if (possibleDestinations[i].Type == Tile.TileType.Water || possibleDestinations[i].HasObstacle)
 				{
 					possibleDestinations.RemoveAt(i);
 					i--;

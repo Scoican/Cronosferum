@@ -252,7 +252,7 @@ namespace Predation.Managers
 				average += entity.GetComponent<Animal>().Speed;
 				count++;
 			}
-			return average / count;
+			return (float)Math.Round(average / count,2);
 		}
 
 		private float GetAverageSensoryDistance(List<Entity> entities)
@@ -269,7 +269,7 @@ namespace Predation.Managers
 				count++;
 
 			}
-			return average / count;
+			return (float)Math.Round(average / count, 2);
 		}
 
 		private float GetAverageDesirability(List<Entity> entities)
@@ -292,7 +292,7 @@ namespace Predation.Managers
 			{
 				return 0;
 			}
-			return average / count;
+			return (float)Math.Round(average / count, 2);
 		}
 	}
 }

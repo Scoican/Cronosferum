@@ -34,10 +34,10 @@ namespace Predation.Entities
 		public Material maleMaterial;
 		public Material femaleMaterial;
 
+		private List<Animal> rejections;
 		private Vector3 fullGrownSize;
 		private float reproductionUrgeGrowRate = 100;
 		private float criticalNeed = 0.75f;
-		private List<Animal> rejections;
 		private float FleeginSpeed;
 		private float InitialSpeed;
 
@@ -142,7 +142,7 @@ namespace Predation.Entities
 		{
 			if (GameManager.gameState == GameStates.Running || GameManager.gameState == GameStates.Continued)
 			{
-				if (age >= 1 && GameManager.GameTimeSpeed > 1)
+				if (age >= 1 && GameManager.GameTimeSpeed > 1 && reproductionUrge < 1 && isMale)
 				{
 					reproductionUrge += Time.deltaTime * GameManager.GameTimeSpeed / reproductionUrgeGrowRate;
 				}
@@ -181,7 +181,7 @@ namespace Predation.Entities
 				{
 					Die(CauseOfDeath.Age);
 				}
-				if (!isMale && reproductionUrge >= criticalNeed)
+				if (isMale && reproductionUrge >= criticalNeed)
 				{
 					rejections.Clear();
 				}
